@@ -23,10 +23,10 @@ public class CountryRepositoryTest {
     @Test
     void lesNomsDePaysSontTousDifferents() {
         log.info("On vérifie que les noms de pays sont tous différents ('unique') dans la table 'Country'");
-        
+
         Country paysQuiExisteDeja = new Country("XX", "France");
         try {
-            countryDAO.save(paysQuiExisteDeja); // On essaye d'enregistrer un pays dont le nom existe   
+            countryDAO.save(paysQuiExisteDeja); // On essaye d'enregistrer un pays dont le nom existe
 
             fail("On doit avoir une violation de contrainte d'intégrité (unicité)");
         } catch (DataIntegrityViolationException e) {
@@ -41,6 +41,26 @@ public class CountryRepositoryTest {
         int combienDePaysDansLeJeuDeTest = 3 + 1; // 3 dans data.sql, 1 dans test-data.sql
         long nombre = countryDAO.count();
         assertEquals(combienDePaysDansLeJeuDeTest, nombre, "On doit trouver 4 pays" );
+    }
+
+    @Test
+    @Sql("test-data.sql")
+    void populationPaysTest(){
+        log.info("On compte les habitants du pays avec id_country 1. Il n'y a que Paris comme pays avec cet id_country. Paris a 12 millions d'habitants.");
+        assertEquals( 12 , countryDAO.populationPays(1));
+
+    }
+
+    @Test
+    @Sql("test-data.sql")
+    void listePopulationTest(){
+        assertEquals(3, countryDAO.listePopulation().size());
+    }
+
+    @Test
+    @Sql("test-data.sql")
+    void listePopulationTest2(){
+        assertEquals(12, countryDAO.listePopulation().get(0).getPop());
     }
 
 }
